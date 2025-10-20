@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Winsun 登录">
+        <meta name="author" content="Winsun">
+
+        <title>Winsun | 登录</title>
+
+        <!-- Favicon -->
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/site.webmanifest">
+        
+        <!-- CSS -->
+        <link href="cs.css" rel="stylesheet">
+        <link href="go.css" rel="stylesheet">
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/bootstrap-icons.css" rel="stylesheet">
+        <link href="css/winsun-kool-form-pack.css" rel="stylesheet">
+        
+        <!-- JavaScript Libraries -->
+        <script src="js/jquery.min.js"></script>
+        <script src="appjs/md5.js"></script>
+        
+        <!-- API 配置 -->
+        <script src="config.js"></script>
+        
+        <script>
+            /**
+             * 登录函数 - 支持多种 API
+             */
+            function login_account() {
+                const email = $('#wmail').val();
+                const password = $('#wpass').val();
+                
+                // 验证输入
+                if (!email || !password) {
+                    alert('请输入邮箱和密码');
+                    return;
+                }
+                
+                // 获取当前 API 配置
+                const api = getCurrentAPI();
+                
+                if (API_CONFIG.DEBUG) {
+                    console.log('使用 API:', API_CONFIG.USE_API);
+                    console.log('API 配置:', api);
+                }
+                
+                // 加密密码
+                const encryptedPassword = encryptPassword(password);
+                
+                // 构建请求
+                let requestConfig = {
+                    type: api.method,
+                    dataType: 'json',
+                    async: true,
+                    error: function(xhr, status, error) {
+                        console.error('请求失败:', error);
+                        alert('登录失败: ' + (xhr.responseJSON?.error || error));
+                    }
+                };
+                
+                // 根据 API 类型构建请求
+                if (api.responseFormat === 'ORIGINAL') {
+                    // 原始 Winsun API (GET 请求)
+                    requestConfig.url = buildApiUrl('login', {
+                        email: email,
+                        password_hash: encryptedPassword
+                    });
+                    requestConfig.dataType = 'html'; // 原始 API 返回 HTML
+                    requestConfig.success = function(data) {
+                        try {
+                            const json = JSON.parse(data);
+                            const result = parseApiResponse(json, 'login');
+                            
+                            if (result.success) {
+                                // 保存认证信息
+                                saveAuthInfo(null, { email: email, password_hash: encryptedPassword });
+                                
+                                // 跳转到仪表板
+                                const redirectUrl = API_CONFIG.REDIRECT_AFTER_LOGIN[API_CONFIG.USE_API];
+                                window.location.href = redirectUrl + '?m=' + email + '&priv=' + encryptedPassword;
+                            } else {
+                                alert(result.message || '登录失败');
+                            }
+                        } catch (e) {
+                            console.error('解析响应失败:', e);
+                            alert('登录失败: 响应格式错误');
+                        }
+                    };
+                } else {
+                    // 新 API (POST 请求)
+                    requestConfig.url = buildApiUrl('login');
+                    requestConfig.contentType = 'application/json';
+                    requestConfig.data = JSON.stringify({
+                        email: email,
+                        password: encryptedPassword
+                    });
+                    requestConfig.success = function(data) {
+                        const result = parseApiResponse(data, 'login');
+                        
+                        if (result.success) {
+                            // 保存认证信息
+                            saveAuthInfo(result.token, result.user);
+                            
+                            // 显示成功消息
+                            alert(result.message || '登录成功！');
+                            
+                            // 跳转到仪表板
+                            const redirectUrl = API_CONFIG.REDIRECT_AFTER_LOGIN[API_CONFIG.USE_API];
+                            window.location.href = redirectUrl;
+                        } else {
+                            alert(result.message || '登录失败');
+                        }
+                    };
+                }
+                
+                // 发送请求
+                $.ajax(requestConfig);
+            }
+            
+            // 页面加载完成后的初始化
+            $(document).ready(function() {
+                // 显示当前使用的 API
+                if (API_CONFIG.DEBUG) {
+                    console.log('='.repeat(50));
+                    console.log('Winsun 登录系统');
+                    console.log('当前使用 API:', API_CONFIG.USE_API);
+                    console.log('API 地址:', getCurrentAPI().baseUrl);
+                    console.log('='.repeat(50));
+                }
+                
+                // 回车键登录
+                $('#wmail, #wpass').keypress(function(e) {
+                    if (e.which === 13) {
+                        login_account();
+                    }
+                });
+            });
+        </script>
+    </head>
+    
+    <body>
+        <main>
+            <!-- Header -->
+            <header class="site-header">
+                <div class="container vexx-body">
+                    <div class="row justify-content-between">
+                        <div class="col-lg-12 col-12 d-flex align-items-center" style="margin-top: -3px;">
+                            <a class="site-header-text d-flex justify-content-center align-items-center me-auto" href="index.html" style="margin-left: -10px;">
+                                <img src="assets/winsun_logo_hd.png" alt="Winsun Home" title="Winsun OS" style="width: 200px;">
+                            </a>
+                            <a class="bi-list offcanvas-icon" data-bs-toggle="offcanvas" href="#offcanvasMenu" role="button" aria-controls="offcanvasMenu"></a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Offcanvas Menu -->
+            <div class="offcanvas offcanvas-end kex-body" data-bs-scroll="true" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">                
+                <div class="offcanvas-header">                    
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                
+                <div class="offcanvas-body d-flex flex-column justify-content-center align-items-center">
+                    <nav>
+                        <ul>
+                            <li><a class="active" href="login-new.html">登录</a></li>
+                            <li><a href="register.html">注册账户</a></li>
+                            <li><a href="password-reset.html">密码重置</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Login Form -->
+            <section class="hero-section d-flex justify-content-center align-items-center vexx-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-5 col-12 mx-auto">
+                            <div class="custom-form login-form" role="form">
+                                <h2 class="hero-title text-center mb-4 pb-2">盈创 / 登录</h2>
+
+                                <div class="form-floating mb-4 p-0">
+                                    <input type="email" name="email" id="wmail" pattern="[^ @]*@[^ @]*" class="form-control" placeholder="电子邮件" required>
+                                    <label for="wmail">电子邮件</label>
+                                </div>
+
+                                <div class="form-floating p-0">
+                                    <input type="password" name="password" id="wpass" class="form-control" placeholder="密码" required>
+                                    <label for="wpass">密码</label>
+                                </div>
+
+                                <div class="form-check mb-4">
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                        记住我
+                                    </label>
+                                </div>
+
+                                <div class="row justify-content-center align-items-center">
+                                    <div class="col-lg-5 col-12">
+                                        <button type="button" class="form-control" onclick="login_account()">登录</button>
+                                    </div>
+
+                                    <div class="col-lg-5 col-12">
+                                        <a href="register.html" class="btn custom-btn custom-border-btn">注册</a>
+                                    </div>
+                                </div>
+                                
+                                <!-- API 状态指示器 (仅调试模式显示) -->
+                                <div id="api-status" class="mt-4 text-center" style="font-size: 12px; color: #666;">
+                                    <script>
+                                        if (API_CONFIG.DEBUG) {
+                                            document.write('<p>当前使用: <strong>' + API_CONFIG.USE_API + ' API</strong></p>');
+                                            document.write('<p style="font-size: 10px;">' + getCurrentAPI().baseUrl + '</p>');
+                                        }
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- JavaScript -->
+        <script src="js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
+

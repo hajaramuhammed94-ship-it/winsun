@@ -1,0 +1,206 @@
+    
+.max-body {
+	margin: 0;
+	background-color: #fff;
+	background-image: radial-gradient(closest-side,#c6befc8a,rgba(198,190,252,0)),radial-gradient(closest-side,#96cd195c,rgba(180, 242, 40, 0)),radial-gradient(closest-side,#2fefb08c,rgba(222,255,147,0)),radial-gradient(closest-side,#d384ffa6,rgba(198,190,252,0)),radial-gradient(closest-side,#deff937d,rgba(222, 255, 147, 0.14));
+	background-size: 130vmax 130vmax,80vmax 80vmax,90vmax 90vmax,110vmax 110vmax,90vmax 90vmax;
+	background-position: -80vmax -80vmax,60vmax -30vmax,10vmax 10vmax,-30vmax -10vmax,50vmax 50vmax;
+	background-repeat: no-repeat;
+	animation: movement 5.8s linear infinite;
+}
+
+.vax-body {
+	margin: 0;
+	background-color: #fff;
+	background-image: radial-gradient(closest-side,#1bff94,rgba(198,190,252,0)),radial-gradient(closest-side,#aef40f,rgba(180, 242, 40, 0)),radial-gradient(closest-side,#2fefb08c,rgba(222,255,147,0)),radial-gradient(closest-side,#a31beeed,rgba(198,190,252,0)),radial-gradient(closest-side,#bcf8337d,rgba(222, 255, 147, 0.14));
+	background-size: 130vmax 130vmax,80vmax 80vmax,90vmax 90vmax,110vmax 110vmax,90vmax 90vmax;
+	background-position: -80vmax -80vmax,60vmax -30vmax,10vmax 10vmax,-30vmax -10vmax,50vmax 50vmax;
+	background-repeat: no-repeat;
+	animation: movement 5.8s linear infinite;
+}
+
+.exc-body {
+	margin: 0;
+	background-color: #fff;
+	background-image: radial-gradient(closest-side,#ef598a,rgba(222,255,147,0)),radial-gradient(closest-side,#c6befc,rgba(198,190,252,0)),radial-gradient(closest-side,#e1b3dc,rgba(222,255,147,0)),radial-gradient(closest-side,#c6befc,rgba(198,190,252,0)),radial-gradient(closest-side,#c65ed5,rgba(222,255,147,0));
+	background-size: 130vmax 130vmax,80vmax 80vmax,90vmax 90vmax,110vmax 110vmax,90vmax 90vmax;
+	background-position: -80vmax -80vmax,60vmax -30vmax,10vmax 10vmax,-30vmax -10vmax,50vmax 50vmax;
+	background-repeat: no-repeat;
+	animation: movement 2.8s linear infinite;
+}
+
+.ted-body {
+	margin: 0;
+	background-color: #ffffff24;
+	background-image: radial-gradient(closest-side,#ef598a,rgba(222,255,147,0)),radial-gradient(closest-side,#c6befc,rgba(198,190,252,0)),radial-gradient(closest-side,#e1b3dc,rgba(222,255,147,0)),radial-gradient(closest-side,#c6befc,rgba(198,190,252,0)),radial-gradient(closest-side,#c65ed5,rgba(222,255,147,0));
+	background-size: 130vmax 130vmax,80vmax 80vmax,90vmax 90vmax,110vmax 110vmax,90vmax 90vmax;
+	background-position: -80vmax -80vmax,60vmax -30vmax,10vmax 10vmax,-30vmax -10vmax,50vmax 50vmax;
+	background-repeat: no-repeat;
+	animation: movement 4.8s linear infinite;
+}
+.cas-body {
+	margin: 0;
+	background-color: #fff;
+	background-image: radial-gradient(closest-side,#59e8ef8c,rgba(222,255,147,0)),radial-gradient(closest-side,#c6befc,rgba(198,190,252,0)),radial-gradient(closest-side,#e1b3dc,rgba(222,255,147,0)),radial-gradient(closest-side,#72c3ebb2,rgba(198,190,252,0)),radial-gradient(closest-side,#c65ed5,rgba(222,255,147,0));
+	background-size: 130vmax 130vmax,80vmax 80vmax,90vmax 90vmax,110vmax 110vmax,90vmax 90vmax;
+	background-position: -80vmax -80vmax,60vmax -30vmax,10vmax 10vmax,-30vmax -10vmax,50vmax 50vmax;
+	background-repeat: no-repeat;
+	animation: movement 3.5s linear infinite;
+}
+
+.das-body {
+	margin: 0;
+	background-color: #ffffff91;
+	background-image: radial-gradient(closest-side,#59e8ef8c,rgba(222,255,147,0)),radial-gradient(closest-side,#c6befc,rgba(198,190,252,0)),radial-gradient(closest-side,#e1b3dc,rgba(222,255,147,0)),radial-gradient(closest-side,#72c3ebb2,rgba(198,190,252,0)),radial-gradient(closest-side,#c65ed5,rgba(222,255,147,0));
+	background-size: 130vmax 130vmax,80vmax 80vmax,90vmax 90vmax,110vmax 110vmax,90vmax 90vmax;
+	background-position: -80vmax -80vmax,60vmax -30vmax,10vmax 10vmax,-30vmax -10vmax,50vmax 50vmax;
+	background-repeat: no-repeat;
+	animation: movement 3.5s linear infinite;
+}
+
+.pas-body {
+	margin: 0;
+	background-color: #fff0;
+	background-image: radial-gradient(closest-side,#d774c38c,rgba(222,255,147,0)),radial-gradient(closest-side,#c6befc,rgba(198,190,252,0)),radial-gradient(closest-side,#e1b3dc,rgba(222,255,147,0)),radial-gradient(closest-side,#72c3ebb2,rgba(198,190,252,0)),radial-gradient(closest-side,#c65ed5,rgba(222,255,147,0));
+	background-size: 130vmax 130vmax,80vmax 80vmax,90vmax 90vmax,110vmax 110vmax,90vmax 90vmax;
+	background-position: -80vmax -80vmax,60vmax -30vmax,10vmax 10vmax,-30vmax -10vmax,50vmax 50vmax;
+	background-repeat: no-repeat;
+	animation: movement 3.5s linear infinite;
+}
+
+.tex-body {
+	margin: 0;
+	background-color: #fff;
+	background-image: radial-gradient(closest-side,#ef598a,rgba(222,255,147,0)),radial-gradient(closest-side,#c6befc,rgba(198,190,252,0)),radial-gradient(closest-side,#e1b3dc,rgba(222,255,147,0)),radial-gradient(closest-side,#c6befc,rgba(198,190,252,0)),radial-gradient(closest-side,#c65ed5,rgba(222,255,147,0));
+	background-size: 130vmax 130vmax,80vmax 80vmax,90vmax 90vmax,110vmax 110vmax,90vmax 90vmax;
+	background-position: -80vmax -80vmax,60vmax -30vmax,10vmax 10vmax,-30vmax -10vmax,50vmax 50vmax;
+	background-repeat: no-repeat;
+	animation: movement 4.8s linear infinite;
+	
+    }
+    
+.vex-body {
+	margin: 0;
+	background-color: #515151;
+	background-image: radial-gradient(closest-side,#ef598a,rgba(222,255,147,0)),radial-gradient(closest-side,#c6befc,rgba(198,190,252,0)),radial-gradient(closest-side,#e1b3dc,rgba(222,255,147,0)),radial-gradient(closest-side,#c6befc,rgba(198,190,252,0)),radial-gradient(closest-side,#c65ed5,rgba(222,255,147,0));
+	background-size: 130vmax 130vmax,80vmax 80vmax,90vmax 90vmax,110vmax 110vmax,90vmax 90vmax;
+	background-position: -80vmax -80vmax,60vmax -30vmax,10vmax 10vmax,-30vmax -10vmax,50vmax 50vmax;
+	background-repeat: no-repeat;
+	animation: movement 4.8s linear infinite;
+	
+    }
+    
+    
+.kex-body {
+	margin: 0;
+	background-color: #fff;
+	background-image: radial-gradient(closest-side,#71edfb,rgba(222,255,147,0)),radial-gradient(closest-side,#5eee9d,rgba(198,190,252,0)),radial-gradient(closest-side,#e1b3dc,rgba(222,255,147,0)),radial-gradient(closest-side,#9484ff,rgba(198,190,252,0)),radial-gradient(closest-side,#c65ed5,rgba(222,255,147,0));
+	background-size: 130vmax 130vmax,80vmax 80vmax,90vmax 90vmax,110vmax 110vmax,90vmax 90vmax;
+	background-position: -80vmax -80vmax,60vmax -30vmax,10vmax 10vmax,-30vmax -10vmax,50vmax 50vmax;
+	background-repeat: no-repeat;
+	animation: movement 4.8s linear infinite;
+}
+
+.eas-body {
+	margin: 0;
+	background-color: #fff0;
+	background-image: radial-gradient(closest-side,#ef59df5c,rgba(222,255,147,0)),radial-gradient(closest-side,#c6befc,rgba(198,190,252,0)),radial-gradient(closest-side,#e1b3dc,rgba(222,255,147,0)),radial-gradient(closest-side,#72c3ebb2,rgba(198,190,252,0)),radial-gradient(closest-side,#c65ed5,rgba(222,255,147,0));
+	background-size: 130vmax 130vmax,80vmax 80vmax,90vmax 90vmax,110vmax 110vmax,90vmax 90vmax;
+	background-position: -80vmax -80vmax,60vmax -30vmax,10vmax 10vmax,-30vmax -10vmax,50vmax 50vmax;
+	background-repeat: no-repeat;
+	animation: movement 18.8s linear infinite;
+	
+}
+
+
+.daso-body {
+	margin: 0;
+	background-color: #000;
+	background-image: radial-gradient(closest-side,#00f3ff,rgba(222,255,147,0)),radial-gradient(closest-side,#035747e8,rgba(198,190,252,0)),radial-gradient(closest-side,#f20997,rgba(222,255,147,0)),radial-gradient(closest-side,#72c3ebb2,rgba(198,190,252,0)),radial-gradient(closest-side,#c65ed5,rgba(222,255,147,0));
+	background-size: 130vmax 130vmax,80vmax 80vmax,90vmax 90vmax,110vmax 110vmax,90vmax 90vmax;
+	background-position: -80vmax -80vmax,60vmax -30vmax,10vmax 10vmax,-30vmax -10vmax,50vmax 50vmax;
+	background-repeat: no-repeat;
+	animation: movement 3.5s linear infinite;
+}
+
+.vexx-body {
+	margin: 0;
+	background-color: #000;
+	background-image: radial-gradient(closest-side,#02f7f7,rgba(222,255,147,0)),radial-gradient(closest-side,#c6befc,rgba(198,190,252,0)),radial-gradient(closest-side,#f451e3,rgba(222,255,147,0)),radial-gradient(closest-side,#0bc6ff9e,rgba(198,190,252,0)),radial-gradient(closest-side,#e8097cc7,rgba(222,255,147,0));
+	background-size: 130vmax 130vmax,80vmax 80vmax,90vmax 90vmax,110vmax 110vmax,90vmax 90vmax;
+	background-position: -80vmax -80vmax,60vmax -30vmax,10vmax 10vmax,-30vmax -10vmax,50vmax 50vmax;
+	background-repeat: no-repeat;
+	animation: movement 4.8s linear infinite;
+}
+
+
+.no-scrollbar {
+  overflow: auto;
+  -ms-overflow-style: none; 
+  scrollbar-width: none;  
+}
+
+@media screen and (max-width: 768px) {
+  .hidden-xs {
+    display: none;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 992px) {
+  .hidden-sm {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 992px) and (max-width: 1200px) {
+  .hidden-md {
+    display: none;
+  }
+}
+@media screen and (min-width: 1200px) {
+  .hidden-lg {
+    display: none;
+  }
+}
+
+
+
+
+.gmi:hover{
+    background:linear-gradient(90deg,#14f195,#80ecff 40.1%,#64a8f2 82.29%,#64a8f2);
+  color:transparent;
+  -webkit-background-clip:text;
+  background-clip:text
+}
+.gmi {
+color:#FFF
+}
+
+.linkbo:hover{
+    cursor: pointer;
+}
+
+.gmibtn:hover{
+
+	background-color: #fee6ff69;
+	background-image: radial-gradient(closest-side,#c1f0f3,rgba(222,255,147,0)),radial-gradient(closest-side,#c6befc,rgba(198,190,252,0)),radial-gradient(closest-side,#c1f0f3,rgba(222,255,147,0)),radial-gradient(closest-side,#c1f0f3,rgba(198,190,252,0)),radial-gradient(closest-side,#c1f0f3,rgba(222,255,147,0));
+	background-size: contain;
+	/* background-position: -20vmax -20vmax,30vmax -30vmax,10vmax 10vmax,-30vmax -10vmax,50vmax 50vmax; */
+	background-repeat: no-repeat;
+	animation: movement 3.5s linear infinite;
+
+}
+
+.mgt3{
+    margin-bottom:10px;
+
+}
+
+.mgt2{
+    margin-bottom:5px;
+
+}
+
+.mgt1{
+    margin-bottom:3px;
+
+}

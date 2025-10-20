@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Winsun 登录 - 混合模式">
+        <meta name="author" content="Winsun">
+
+        <title>Winsun | 登录</title>
+
+        <!-- Favicon -->
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        
+        <!-- CSS -->
+        <link href="cs.css" rel="stylesheet">
+        <link href="go.css" rel="stylesheet">
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/bootstrap-icons.css" rel="stylesheet">
+        <link href="css/winsun-kool-form-pack.css" rel="stylesheet">
+        
+        <!-- JavaScript Libraries -->
+        <script src="js/jquery.min.js"></script>
+        
+        <script>
+            /**
+             * 混合登录系统
+             * - 使用自己的后端 API 进行用户认证
+             * - 登录成功后，使用 Winsun 官方 API 获取功能数据
+             */
+            
+            // 配置
+            const CONFIG = {
+                // 你自己的后端 API（用于登录认证）
+                AUTH_API: 'https://winsun-backend-9ueb8wgwv-cvsgetyes-projects.vercel.app',
+                
+                // Winsun 官方 API（用于功能数据）
+                WINSUN_API: 'https://api.winsun8.com',
+                
+                // 调试模式
+                DEBUG: true
+            };
+            
+            /**
+             * 登录函数
+             */
+            function login_account() {
+                const email = $('#wmail').val();
+                const password = $('#wpass').val();
+                
+                // 验证输入
+                if (!email || !password) {
+                    alert('请输入邮箱和密码');
+                    return;
+                }
+                
+                if (CONFIG.DEBUG) {
+                    console.log('==================================================');
+                    console.log('Winsun 混合登录系统');
+                    console.log('认证 API:', CONFIG.AUTH_API);
+                    console.log('功能 API:', CONFIG.WINSUN_API);
+                    console.log('==================================================');
+                }
+                
+                // 第一步：使用自己的后端 API 进行认证
+                $.ajax({
+                    type: 'POST',
+                    url: CONFIG.AUTH_API + '/api/auth/login',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        email: email,
+                        password: password
+                    }),
+                    success: function(response) {
+                        if (CONFIG.DEBUG) {
+                            console.log('认证响应:', response);
+                        }
+                        
+                        if (response.success) {
+                            // 保存 JWT Token
+                            localStorage.setItem('auth_token', response.token);
+                            localStorage.setItem('user_info', JSON.stringify(response.user));
+                            
+                            // 保存邮箱和密码（用于后续 Winsun API 调用）
+                            // 注意：实际生产环境中不应该保存明文密码
+                            // 这里只是为了演示如何与 Winsun API 集成
+                            sessionStorage.setItem('winsun_email', email);
+                            sessionStorage.setItem('winsun_password', password);
+                            
+                            if (CONFIG.DEBUG) {
+                                console.log('✅ 登录成功！');
+                                console.log('用户信息:', response.user);
+                                console.log('Token:', response.token);
+                            }
+                            
+                            // 显示成功消息
+                            alert('登录成功！欢迎 ' + (response.user.username || response.user.email));
+                            
+                            // 跳转到仪表板
+                            // 仪表板将使用保存的凭证调用 Winsun API 获取功能数据
+                            window.location.href = '/client/dashboard.html';
+                        } else {
+                            alert('登录失败：' + (response.message || response.error || '未知错误'));
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('登录错误:', error);
+                        console.error('响应:', xhr.responseText);
+                        
+                        let errorMsg = '登录失败';
+                        try {
+                            const errorData = JSON.parse(xhr.responseText);
+                            errorMsg = errorData.error || errorData.message || errorMsg;
+                        } catch (e) {
+                            errorMsg = error || errorMsg;
+                        }
+                        
+                        alert(errorMsg);
+                    }
+                });
+            }
+            
+            /**
+             * 页面加载完成后的初始化
+             */
+            $(document).ready(function() {
+                // 检查是否已登录
+                const token = localStorage.getItem('auth_token');
+                if (token) {
+                    if (CONFIG.DEBUG) {
+                        console.log('检测到已登录状态');
+                    }
+                    // 可以选择自动跳转到仪表板
+                    // window.location.href = '/client/dashboard.html';
+                }
+                
+                // 回车键登录
+                $('#wmail, #wpass').keypress(function(e) {
+                    if (e.which == 13) {
+                        login_account();
+                    }
+                });
+                
+                if (CONFIG.DEBUG) {
+                    console.log('==================================================');
+                    console.log('Winsun 混合登录系统已加载');
+                    console.log('认证 API:', CONFIG.AUTH_API);
+                    console.log('功能 API:', CONFIG.WINSUN_API);
+                    console.log('==================================================');
+                }
+            });
+        </script>
+    </head>
+    <body>
+        <main>
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="text-center mt-5 mb-3">
+                            <a href="/">
+                                <img src="assets/winsun_logo_hd.png" class="navbar-brand-image" alt="Winsun Logo" style="max-width: 200px;">
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-12 mx-auto">
+                        <form class="custom-form login-form" onsubmit="return false;">
+                            <h2 class="hero-title text-center mb-4">盈创 / 登录</h2>
+                            
+                            <!-- 系统说明 -->
+                            <div class="alert alert-info" role="alert">
+                                <strong>混合登录系统</strong><br>
+                                ✅ 使用您自己的账户系统进行认证<br>
+                                ✅ 登录后可使用完整的交易功能
+                            </div>
+
+                            <div class="form-floating mb-4">
+                                <input type="email" name="email" id="wmail" class="form-control" placeholder="电子邮件" required>
+                                <label for="wmail">电子邮件</label>
+                            </div>
+
+                            <div class="form-floating mb-4">
+                                <input type="password" name="password" id="wpass" class="form-control" placeholder="密码" required>
+                                <label for="wpass">密码</label>
+                            </div>
+
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    记住我
+                                </label>
+                            </div>
+
+                            <div class="row justify-content-center align-items-center">
+                                <div class="col-lg-5 col-md-5 col-5 ms-auto">
+                                    <button type="button" class="form-control" onclick="login_account()">登录</button>
+                                </div>
+
+                                <div class="col-lg-5 col-md-5 col-5">
+                                    <a href="register.html" class="btn custom-btn custom-border-btn">注册</a>
+                                </div>
+
+                                <div class="col-12">
+                                    <p class="copyright-text text-center mt-lg-5 mt-4">
+                                        <a href="password-reset.html">忘记密码？</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 背景动画 -->
+        <div class="video-wrap">
+            <img src="assets/windynamic.gif" class="custom-video" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+
+        <!-- Bootstrap JS -->
+        <script src="js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
+

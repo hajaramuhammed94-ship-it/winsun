@@ -1,0 +1,59 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/client/login-hybrid",
+      "destination": "/client/login-hybrid.html"
+    },
+    {
+      "source": "/client/login-new",
+      "destination": "/client/login-new.html"
+    },
+    {
+      "source": "/client/login",
+      "destination": "/client/login.html"
+    },
+    {
+      "source": "/client/register",
+      "destination": "/client/register.html"
+    },
+    {
+      "source": "/client/dashboard",
+      "destination": "/client/dashboard.html"
+    },
+    {
+      "source": "/client/password-reset",
+      "destination": "/client/password-reset.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    },
+    {
+      "source": "/static/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ]
+}
+

@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Winsun | 仪表板</title>
+
+        <!-- CSS -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/bootstrap-icons.css" rel="stylesheet">
+        <link href="cs.css" rel="stylesheet">
+        
+        <!-- JavaScript -->
+        <script src="js/jquery.min.js"></script>
+        
+        <style>
+            body {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                padding: 20px;
+            }
+            .dashboard-container {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+            .card {
+                background: rgba(255, 255, 255, 0.95);
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                margin-bottom: 20px;
+            }
+            .user-info {
+                background: white;
+                padding: 30px;
+                border-radius: 15px;
+                margin-bottom: 30px;
+            }
+            .feature-card {
+                padding: 20px;
+                text-align: center;
+                transition: transform 0.3s;
+            }
+            .feature-card:hover {
+                transform: translateY(-5px);
+            }
+            .feature-icon {
+                font-size: 48px;
+                margin-bottom: 15px;
+            }
+            .logout-btn {
+                background: #dc3545;
+                color: white;
+                border: none;
+                padding: 10px 30px;
+                border-radius: 25px;
+                cursor: pointer;
+            }
+            .logout-btn:hover {
+                background: #c82333;
+            }
+        </style>
+        
+        <script>
+            // 配置
+            const CONFIG = {
+                AUTH_API: 'https://winsun-backend-9ueb8wgwv-cvsgetyes-projects.vercel.app',
+                WINSUN_API: 'https://api.winsun8.com',
+                DEBUG: true
+            };
+            
+            /**
+             * 检查登录状态
+             */
+            function checkAuth() {
+                const token = localStorage.getItem('auth_token');
+                const userInfo = localStorage.getItem('user_info');
+                
+                if (!token || !userInfo) {
+                    alert('请先登录');
+                    window.location.href = '/client/login-hybrid.html';
+                    return false;
+                }
+                
+                return true;
+            }
+            
+            /**
+             * 显示用户信息
+             */
+            function displayUserInfo() {
+                const userInfo = JSON.parse(localStorage.getItem('user_info'));
+                
+                $('#user-email').text(userInfo.email || '未知');
+                $('#user-name').text(userInfo.username || userInfo.full_name || '用户');
+                $('#user-id').text(userInfo.id || 'N/A');
+            }
+            
+            /**
+             * 调用 Winsun API 获取数据示例
+             */
+            function fetchWinsunData() {
+                const email = sessionStorage.getItem('winsun_email');
+                const password = sessionStorage.getItem('winsun_password');
+                
+                if (!email || !password) {
+                    $('#winsun-status').html('<span class="text-warning">⚠️ 未配置 Winsun API 凭证</span>');
+                    return;
+                }
+                
+                // 这里可以调用 Winsun API
+                // 例如获取交易信号、账户信息等
+                $('#winsun-status').html('<span class="text-success">✅ Winsun API 已连接</span>');
+                
+                if (CONFIG.DEBUG) {
+                    console.log('Winsun API 凭证已配置');
+                    console.log('邮箱:', email);
+                }
+            }
+            
+            /**
+             * 登出
+             */
+            function logout() {
+                if (confirm('确定要退出登录吗？')) {
+                    // 清除所有存储的数据
+                    localStorage.removeItem('auth_token');
+                    localStorage.removeItem('user_info');
+                    sessionStorage.removeItem('winsun_email');
+                    sessionStorage.removeItem('winsun_password');
+                    
+                    // 跳转到登录页
+                    window.location.href = '/client/login-hybrid.html';
+                }
+            }
+            
+            /**
+             * 页面加载
+             */
+            $(document).ready(function() {
+                // 检查登录状态
+                if (!checkAuth()) {
+                    return;
+                }
+                
+                // 显示用户信息
+                displayUserInfo();
+                
+                // 检查 Winsun API 连接
+                fetchWinsunData();
+                
+                if (CONFIG.DEBUG) {
+                    console.log('仪表板已加载');
+                }
+            });
+        </script>
+    </head>
+    <body>
+        <div class="dashboard-container">
+            <!-- 用户信息卡片 -->
+            <div class="user-info">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2>欢迎回来，<span id="user-name">用户</span>！</h2>
+                        <p class="mb-1"><strong>邮箱：</strong><span id="user-email">-</span></p>
+                        <p class="mb-1"><strong>用户 ID：</strong><span id="user-id">-</span></p>
+                        <p class="mb-0"><strong>API 状态：</strong><span id="winsun-status">检查中...</span></p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <button class="logout-btn" onclick="logout()">退出登录</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 功能卡片 -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h4>交易信号</h4>
+                        <p>查看实时交易信号和市场分析</p>
+                        <button class="btn btn-primary" onclick="alert('此功能将调用 Winsun API 获取交易信号')">查看信号</button>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card feature-card">
+                        <div class="feature-icon">💰</div>
+                        <h4>账户管理</h4>
+                        <p>管理您的交易账户和资金</p>
+                        <button class="btn btn-primary" onclick="alert('此功能将调用 Winsun API 获取账户信息')">查看账户</button>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card feature-card">
+                        <div class="feature-icon">📈</div>
+                        <h4>历史记录</h4>
+                        <p>查看交易历史和统计数据</p>
+                        <button class="btn btn-primary" onclick="alert('此功能将调用 Winsun API 获取历史数据')">查看记录</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card feature-card">
+                        <div class="feature-icon">⚙️</div>
+                        <h4>设置</h4>
+                        <p>配置您的账户和偏好设置</p>
+                        <button class="btn btn-secondary" onclick="alert('设置功能')">进入设置</button>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h4>通知</h4>
+                        <p>管理您的通知和提醒</p>
+                        <button class="btn btn-secondary" onclick="alert('通知功能')">查看通知</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 说明 -->
+            <div class="card mt-4" style="padding: 20px;">
+                <h5>💡 系统说明</h5>
+                <ul>
+                    <li><strong>认证系统</strong>：使用您自己部署的后端 API 进行用户认证和管理</li>
+                    <li><strong>功能 API</strong>：登录后，可以调用 Winsun 官方 API 获取交易信号、市场数据等功能</li>
+                    <li><strong>数据安全</strong>：您的用户数据存储在自己的数据库中，完全可控</li>
+                    <li><strong>灵活扩展</strong>：可以随时添加新功能或切换到其他 API</li>
+                </ul>
+                
+                <h5 class="mt-4">🔧 如何使用 Winsun API</h5>
+                <p>在登录成功后，系统会保存必要的凭证。您可以在任何页面使用以下代码调用 Winsun API：</p>
+                <pre style="background: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto;"><code>// 获取保存的凭证
+const email = sessionStorage.getItem('winsun_email');
+const password = sessionStorage.getItem('winsun_password');
+
+// 调用 Winsun API
+$.ajax({
+    type: 'GET',
+    url: 'https://api.winsun8.com/api/your-endpoint',
+    data: {
+        email: email,
+        // 根据 API 要求添加其他参数
+    },
+    success: function(data) {
+        console.log('Winsun API 响应:', data);
+    }
+});</code></pre>
+            </div>
+        </div>
+    </body>
+</html>
+

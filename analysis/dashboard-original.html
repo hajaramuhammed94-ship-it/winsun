@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Winsun User | dashboard</title>
+    <link href="xcss/tron.css" rel="stylesheet" type="text/css"/>
+    <meta charset="UTF-8" />
+<meta name="renderer" content="webkit" />
+<meta name="description" content="Updates and statistics" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="format-detection" content="telephone=no,email=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link href="xcss/win_dark.css" rel="stylesheet" type="text/css" />
+    <link href="xcss/tun_dark.css" rel="stylesheet" type="text/css" />
+    <link href="xcss/style_dark.css" rel="stylesheet" type="text/css" />
+    <link href="xcss/go.css" rel="stylesheet" type="text/css" />
+    <link href="/favicon.ico" rel="shortcut icon" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+    <script src="dashboardjs/jquery-3.6.1.min.js"></script>
+    <script src="dashboardjs/jquery.params.js"></script>
+    <script src="dashboardjs/json2.js"></script>
+    <script src="dashboardjs/md5.js"></script>
+    <script src="board.js"></script>
+    <script>
+        $(document).ready(function(){
+             qrylist()
+        });
+        
+
+        function JSONLength(obj) {
+            var size = 0, key;
+            for (key in obj) {
+            if (obj.hasOwnProperty(key)) size++;
+            }
+            return size;
+        }; 
+
+
+        function qrylist(){
+       $.ajax({
+	    type:"GET",
+	    dataType: "html",
+	    url: "https://api.winsun8.com/api/account/sublist/m="+$.query.get("m")+"&priv="+$.query.get("priv"),
+	    async:false,
+	    success: function(data) {
+        var json =JSON.parse(data);
+        if (json.status=="ok"){
+             $(pnuma).text(JSONLength(json.rsp));
+             $(pnumb).text("数量:"+JSONLength(json.rsp)+"  (个)");
+             $(pinst).text(JSONLength(json.rsp)+"/"+JSONLength(json.rsp));
+             $(pinstdetail).text("最大连接实例数"+JSONLength(json.rsp)+"  (个)");
+           for (var i=1;i<=JSONLength(json.rsp);i++){
+                     if (JSONLength(json.rsp)!=0){
+                         if (i==1){
+                             $(pendx).text(json.rsp[i].end);
+                             $(pdetail).text("                        LV0 普通                                              :"+json.rsp[i].end+" 到期    ")
+                         }
+                         if (json.rsp[i].end=="unlimit"){
+                                if (json.rsp[i].allow_connect=="true"){
+                                         if (json.rsp[i].status=="normal"){
+                                                         $('#sublist').append(" <div class=\"nav-link border d-flex flex-grow-1 rounded flex-column align-items-left\" style=\"color:#777;box-shadow:0 12px 9px 0 #222,0 25px 300px 0 rgba(255, 255, 255, 0.26);background-color:#000;border-color:#000;width:auto;height:auto;font-size: 15px;letter-spacing: 0.05em;line-height: 1.2;font-style: normal;font-weight: 100;width:auto;background-color: #1e1e1e;border-color: #7f1f1f;\"><p class=\"nav-link border d-flex flex-grow-1 rounded flex-column align-items-left\"> 免费计划订阅码["+i+"]: "+json.rsp[i].subcode+"  </p>  交易所uid: "+json.rsp[i].bind.user_id+"   订阅码状态: "+"正常"+"   有效状态: "+json.rsp[i].allow_connect+"   start: "+json.rsp[i].start+"     ~ "+json.rsp[i].end+"   Account: "+json.rsp[i].account+"  </p></div><br>")
+                                                         
+                                         }
+                                         if (json.rsp[i].status=="low"){
+                                                 $('#sublist').append(" <div class=\"nav-link border d-flex flex-grow-1 rounded flex-column align-items-left\" style=\"color:#ffcf5f;box-shadow:0 12px 9px 0 #222,0 25px 300px 0 rgba(255, 255, 255, 0.26);background-color:#000;border-color:#000;width:auto;height:auto;font-size: 15px;letter-spacing: 0.05em;line-height: 1.2;font-style: normal;font-weight: 100;width:auto;background-color: #1e1e1e;border-color: #7f1f1f;\"><p class=\"nav-link border d-flex flex-grow-1 rounded flex-column align-items-left\"> 免费计划订阅码["+i+"]: "+json.rsp[i].subcode+"  </p>  交易所uid: "+json.rsp[i].bind.user_id+"   订阅码状态: "+"考察期"+"   有效状态: "+json.rsp[i].allow_connect+"   start: "+json.rsp[i].start+"     ~ "+json.rsp[i].end+"   Account: "+json.rsp[i].account+"  </p></div><br>")
+                                         }
+                                }else{
+                                       $('#sublist').append(" <div class=\"nav-link border d-flex flex-grow-1 rounded flex-column align-items-left\" style=\"color:#ff6000;box-shadow:0 12px 9px 0 #222,0 25px 300px 0 rgba(255, 255, 255, 0.26);background-color:#000;border-color:#000;width:auto;height:auto;font-size: 15px;letter-spacing: 0.05em;line-height: 1.2;font-style: normal;font-weight: 100;width:auto;background-color: #1e1e1e;border-color: #7f1f1f;\"><p class=\"nav-link border d-flex flex-grow-1 rounded flex-column align-items-left\"> 免费计划订阅码["+i+"]: "+json.rsp[i].subcode+"  </p>  交易所uid: "+json.rsp[i].bind.user_id+"   订阅码状态: "+"因交易活动过低暂停使用( 1.请联络WINSUN官方客服 TG: winsun9 申请延长考察期。 2.后续请正常使用交易所账户进行交易，避免小额交易。) Account: "+json.rsp[i].account+"  </p></div><br>")    
+                                }
+                         }else{
+                          $('#sublist').append(" <div class=\"nav-link border d-flex flex-grow-1 rounded flex-column align-items-left\" style=\"color:#777;box-shadow:0 12px 9px 0 #222,0 25px 300px 0 rgba(255, 255, 255, 0.26);background-color:#000;border-color:#000;width:auto;height:auto;font-size: 15px;letter-spacing: 0.05em;line-height: 1.2;font-style: normal;font-weight: 100;width:auto;background-color: #1e1e1e;border-color: #7f1f1f;\"><p class=\"nav-link border d-flex flex-grow-1 rounded flex-column align-items-left\"> 订阅码["+i+"]: "+json.rsp[i].subcode+"  </p>  start: "+json.rsp[i].start+"     ~ "+json.rsp[i].end+"   Account: "+json.rsp[i].account+"  </p></div><br>")
+                         }
+                     }else{
+                           $('#sublist').append(" <div class=\"nav-link border d-flex flex-grow-1 rounded flex-column align-items-left\" style=\"color:#777;box-shadow:0 12px 9px 0 #222,0 25px 300px 0 rgba(255, 255, 255, 0.26);background-color:#000;border-color:#000;width:auto;height:auto;font-size: 15px;letter-spacing: 0.05em;line-height: 1.2;font-style: normal;font-weight: 100;width:auto;background-color: #1e1e1e;border-color: #7f1f1f;\"><p class=\"nav-link border d-flex flex-grow-1 rounded flex-column align-items-left\"> 订阅码["+i+"]: "+json.rsp[i].subcode+"  </p>  start: "+json.rsp[i].start+"     ~ "+json.rsp[i].end+"   Account: "+json.rsp[i].account+"  </p></div><br>")
+                     }
+                            
+                     
+                 }
+        }
+        if (json.status!="ok"){
+            alert (json.rsp);
+        }
+                
+	  }
+	});
+}  
+        
+    </script>
+<script>
+function getcodefree() {
+    var userInput = prompt("请填写您通过邀请码 WINSUNOS 注册成功并认证的交易所UID (交易所APP -> 点击个人头像 -> 复制UID)");
+
+    if (userInput !== null) {
+        var cleanedInput = userInput.replace(/\s+/g, '');
+
+        // 获取 URL 参数 m
+        var m = new URLSearchParams(window.location.search).get("m");
+        if (!m) {
+            alert("缺少参数 m，无法继续");
+            return;
+        }
+
+        var url = `https://api.winsun8.com/freeplan/account=${m}&uid=${encodeURIComponent(cleanedInput)}&exchange=gate`;
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            dataType: "html",
+            success: function(data) {
+                try {
+                    var json = JSON.parse(data);
+                    if (json.status === "ok") {
+                        alert("领取成功! 您的订阅码:" + json.rsp.subcode + " 注意:确保用所注册的交易所进行交易活动，没有交易量,交易额过低 都会导致订阅码自动进入“考察期”, 如超过“考察期”仍无交易活动，此订阅码会被平台自动暂停使用。");
+                        alert("请刷新此页面");
+                    } else if (json.status === "fail") {
+                        alert("领取失败，错误信息:" + json.rsp);
+                    }
+                } catch (e) {
+                    alert("返回数据格式错误");
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("请求失败:", error);
+                alert("网络错误，请稍后重试");
+            }
+        });
+    }
+}
+
+ function video(){
+        window.open("https://www.winsun8.com/dashboard/winsun.mp4","_blank");
+    }
+</script>
+</head>
+<body id="kt_body"  class="quick-panel-right demo-panel-right offcanvas-right header-fixed subheader-enabled modal-open header-menu-wrapper-on " >
+<div id="kt_header_mobile" class="header-mobile">
+     <img src="winsun_logo_hd.png" alt="Winsun Home" title="Winsun OS" style="width: 200px;">
+        <div class="d-flex align-items-center">
+            <button class="btn p-0 burger-icon burger-icon-left ml-4"  id="showButton">
+                <span></span>
+            </button>
+            <button class="btn btn-icon btn-hover-transparent-white p-0 ml-3" id="showButton2">
+                    <span class="svg-icon svg-icon-xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                <polygon points="0 0 24 0 24 24 0 24" />
+                                <path d="M12,11 C9.790861,11 8,9.209139 8,7 C8,4.790861 9.790861,3 12,3 C14.209139,3 16,4.790861 16,7 C16,9.209139 14.209139,11 12,11 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" />
+                                <path d="M3.00065168,20.1992055 C3.38825852,15.4265159 7.26191235,13 11.9833413,13 C16.7712164,13 20.7048837,15.2931929 20.9979143,20.2 C21.0095879,20.3954741 20.9979143,21 20.2466999,21 C16.541124,21 11.0347247,21 3.72750223,21 C3.47671215,21 2.97953825,20.45918 3.00065168,20.1992055 Z" fill="#fff" fill-rule="nonzero" />
+                            </g>
+                        </svg>
+                    </span>
+            </button>
+        </div>
+</div>
+
+
+    <div class="d-flex flex-column flex-root">
+        <div class="d-flex flex-row flex-column-fluid page">
+            <div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
+                                    <div id="kt_header" class="header header-fixed">
+                        <div class="container d-flex align-items-stretch justify-content-between">
+                            <div class="d-flex align-items-stretch mr-3">
+
+                                <div class="header-logo">
+                                    <a class="pill" onclick="linkZ()">
+                                        <img src="winsun_logo_hd.png" alt="Winsun Home" title="Winsun OS" style="width: 200px;">
+                                    </a>
+                                </div>
+
+                                <div class="header-menu-wrapper header-menu-wrapper-left" id="kt_header_menu_wrapper">
+                                    <div id="kt_header_menu" class="header-menu header-menu-left header-menu-mobile header-menu-layout-default">
+
+                                        <ul class="menu-nav">
+                                            <li class="menu-item menu-item-submenu menu-item-rel" onclick="linkZ()">
+                                                <p class="menu-link">
+                                                    <span class="menu-text"><strong>用户中心</strong></span>
+                                                </p>
+                                            </li>
+                                            <li class="menu-item menu-item-submenu menu-item-rel" onclick="linkA()">
+                                                <p class="menu-link">
+                                                    <span class="menu-text"><strong>购买订阅码</strong></span>
+                                                </p>
+                                            </li>
+                                            <li class="menu-item menu-item-submenu menu-item-rel" onclick="winapp()">
+                                                <p href="#" class="menu-link">
+                                                    <span class="menu-text"><strong>下载(Windows)</strong></span>
+                                                </p>
+                                            </li>
+                                            <li class="menu-item menu-item-submenu menu-item-rel" onclick="androidapp()">
+                                                <p href="#" class="menu-link">
+                                                    <span class="menu-text"><strong>下载(手机端)</strong></span>
+                                                </p>
+                                            </li>
+                                            <li class="menu-item menu-item-submenu menu-item-rel" onclick="linkB()">
+                                                <p class="menu-link menu-toggle">
+                                                    <span class="menu-text"><strong>账户信息</strong></span>
+                                                </p>
+                                            </li>
+                                            <li class="menu-item menu-item-submenu menu-item-rel" onclick="privacy()">
+                                                <p href="#" class="menu-link">
+                                                    <span class="menu-text" ><strong>服务条款</strong></span>
+                                                </p>
+                                            </li>
+                                            </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="topbar">
+
+
+
+                                <div class="dropdown">
+                                    <div class="topbar-item" data-toggle="dropdown" data-offset="0px,0px">
+                                        <div class="btn btn-icon btn-hover-transparent-white d-flex align-items-center btn-lg px-md-2 w-md-auto">
+                                          
+                                            <span class="text-white opacity-90 font-weight-bolder font-size-base d-none d-md-inline mr-4" id="waccount" >N/A</span>
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="dropdown-menu p-0 m-0 dropdown-menu-right dropdown-menu-anim-up dropdown-menu-lg p-0 shadow-lg">
+                                        <div class="d-flex align-items-center p-8 rounded-top">
+                                          
+                                            <div class="text-primary m-0 flex-grow-1 mr-3 font-size-h5">&nbsp;<strong id="waccount">ACCOUNT</strong></div>
+                                    
+                                        </div>
+                                        <div class="navi navi-spacer-x-0 pt-5">
+                                            <div class="navi-separator mt-3"></div>
+                                            <div class="navi-footer px-8 py-5">
+                                                <a href="/user/logout" class="btn btn-gray font-weight-bold">退出登录</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+                    <div class="subheader min-h-lg-175px pt-5 pb-7 subheader-transparent" id="kt_subheader">
+                        <div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+                            <div class="d-flex align-items-center flex-wrap mr-2">
+                                <div class="d-flex flex-column">
+                                    <h2 class="text-white font-weight-bold my-2 mr-5"> </h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column-fluid">
+                        <div class="container">
+                            <div id="index-alert">
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6 col-lg-6 col-xl-3 ">
+                                    <div class="card card-custom mb-8 bg-card-dark rounded-lg shadow" style="height:288px">
+                                        <div class="card-body pt-6 pl-4 pb-0">
+                                            <div class="d-flex pt-4 pl-4 pr-4 pb-0">
+                                                    <span class="svg-icon svg-icon-4x svg-icon-primary" >
+                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="#fff" d="M0 72C0 58.7 10.7 48 24 48L69.3 48C96.4 48 119.6 67.4 124.4 94L124.8 96L312 96L312 198.1L281 167.1C271.6 157.7 256.4 157.7 247.1 167.1C237.8 176.5 237.7 191.7 247.1 201L319.1 273C328.5 282.4 343.7 282.4 353 273L425 201C434.4 191.6 434.4 176.4 425 167.1C415.6 157.8 400.4 157.7 391.1 167.1L360.1 198.1L360.1 96L537.5 96C557.5 96 572.6 114.2 568.9 133.9L537.8 299.8C532.1 330.1 505.7 352 474.9 352L171.3 352L176.4 380.3C178.5 391.7 188.4 400 200 400L456 400C469.3 400 480 410.7 480 424C480 437.3 469.3 448 456 448L200.1 448C165.3 448 135.5 423.1 129.3 388.9L77.2 102.6C76.5 98.8 73.2 96 69.3 96L24 96C10.7 96 0 85.3 0 72zM160 528C160 501.5 181.5 480 208 480C234.5 480 256 501.5 256 528C256 554.5 234.5 576 208 576C181.5 576 160 554.5 160 528zM384 528C384 501.5 405.5 480 432 480C458.5 480 480 501.5 480 528C480 554.5 458.5 576 432 576C405.5 576 384 554.5 384 528z"/></svg>
+                                                    </span>
+                                                <div class="d-flex flex-column ml-3 mr-5">
+                                                    <div class="font-size-h4 text-white mb-2"><strong><span class="counter" >免费获取</span> </strong></div>
+                                                    <p class="text-dark-50">方式1.用邀请码: <strong style="color:#00f01a">WINSUNOS</strong> 注册Gate.io交易所</p>
+                                                    <p class="text-dark-50">方式2.用邀请链接 <a style="color:#00f01a" href="https://www.gatewebsite.com/zh/signup?ref_type=103&ref=WINSUNOS">Gate授权注册渠道</a> 注册Gate.io交易所</p>
+                                                </div>
+                                            </div>
+                                            <p  class="btn btn-primary font-weight-bold btn-pill" onclick="video()">视频教程</p>
+                                            <p  class="btn btn-primary font-weight-bold btn-pill" onclick="getcodefree()">领取免费订阅码</p>
+                                        </div>
+                                        <div class="card-body pt-2 pl-5 pr-3 pb-1">
+                                            <p  style="color:#00ffdb">重要:请用新的(身份认证)邮箱或手机号注册，先完成注册，再点击领取。<br>勿注销旧账号再重新注册，后期订阅码会失效。</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-lg-6 col-xl-3 ">
+                                    <div class="card card-custom mb-8 bg-card-dark rounded-lg shadow" style="height:288px">
+                                        <div class="card-body pt-6 pl-4 pb-0">
+                                            <div class="d-flex pt-4 pl-4 pr-4 pb-0">
+                                                    <span class="svg-icon svg-icon-4x svg-icon-primary" >
+                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="#fff" d="M0 72C0 58.7 10.7 48 24 48L69.3 48C96.4 48 119.6 67.4 124.4 94L124.8 96L312 96L312 198.1L281 167.1C271.6 157.7 256.4 157.7 247.1 167.1C237.8 176.5 237.7 191.7 247.1 201L319.1 273C328.5 282.4 343.7 282.4 353 273L425 201C434.4 191.6 434.4 176.4 425 167.1C415.6 157.8 400.4 157.7 391.1 167.1L360.1 198.1L360.1 96L537.5 96C557.5 96 572.6 114.2 568.9 133.9L537.8 299.8C532.1 330.1 505.7 352 474.9 352L171.3 352L176.4 380.3C178.5 391.7 188.4 400 200 400L456 400C469.3 400 480 410.7 480 424C480 437.3 469.3 448 456 448L200.1 448C165.3 448 135.5 423.1 129.3 388.9L77.2 102.6C76.5 98.8 73.2 96 69.3 96L24 96C10.7 96 0 85.3 0 72zM160 528C160 501.5 181.5 480 208 480C234.5 480 256 501.5 256 528C256 554.5 234.5 576 208 576C181.5 576 160 554.5 160 528zM384 528C384 501.5 405.5 480 432 480C458.5 480 480 501.5 480 528C480 554.5 458.5 576 432 576C405.5 576 384 554.5 384 528z"/></svg>
+                                                    </span>
+                                                <div class="d-flex flex-column ml-3 mr-5">
+                                                    <div class="font-size-h4 text-white mb-2"><strong><span class="counter" >订阅码商店</span> </strong></div>
+                                                    <p class="text-dark-50">购买订阅码</p>
+                                                </div>
+                                            </div>
+                                            <p  class="btn btn-primary font-weight-bold btn-pill" onclick="linkA()">购买订阅码</p>
+                                        </div>
+                                        <div class="card-body pt-2 pl-5 pr-3 pb-1">
+                                            <p class="text-dark-50" >
+                                                                                                                                                                                                                                                                                                            购买订阅码  
+                                                                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                
+                                <div class="col-sm-6 col-lg-6 col-xl-3 ">
+                                    <div class="card card-custom mb-8 bg-card-dark rounded-lg shadow">
+                                        <div class="card-body pt-6 pl-4 pb-0">
+                                            <div class="d-flex pt-4 pl-4 pr-4 pb-0">
+                                                    <span class="svg-icon svg-icon-4x svg-icon-primary" >
+                                                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="#fff" d="M160 64C142.3 64 128 78.3 128 96C128 113.7 142.3 128 160 128L160 139C160 181.4 176.9 222.1 206.9 252.1L274.8 320L206.9 387.9C176.9 417.9 160 458.6 160 501L160 512C142.3 512 128 526.3 128 544C128 561.7 142.3 576 160 576L480 576C497.7 576 512 561.7 512 544C512 526.3 497.7 512 480 512L480 501C480 458.6 463.1 417.9 433.1 387.9L365.2 320L433.1 252.1C463.1 222.1 480 181.4 480 139L480 128C497.7 128 512 113.7 512 96C512 78.3 497.7 64 480 64L160 64zM224 139L224 128L416 128L416 139C416 158 410.4 176.4 400 192L240 192C229.7 176.4 224 158 224 139zM240 448C243.5 442.7 247.6 437.7 252.1 433.1L320 365.2L387.9 433.1C392.5 437.7 396.5 442.7 400.1 448L240 448z"/></svg>
+                                                    </span>
+                                                <div class="d-flex flex-column ml-3 mr-5">
+                                                    <div class="font-size-h4 text-white mb-2"><strong><span class="counter" id="pendx"> N/A</span> </strong></div>
+                                                    <p class="text-dark-50">到期时间</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body pt-2 pl-5 pr-3 pb-1">
+                                            <p class="text-dark-50" id="pdetail">
+                                                                                                                                                                                                                                                                                                            LV0 普通                                                                                                                                                                                                                                                                                                        :
+                                                                                                    N/A 到期
+                                                                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-lg-6 col-xl-3 ">
+                                    <div class="card card-custom mb-8 bg-card-dark rounded-lg shadow">
+                                        <div class="card-body pt-6 pl-4 pb-0">
+                                            <div class="d-flex pt-4 pl-4 pr-4 pb-0">
+                                                    <span class="svg-icon svg-icon-4x svg-icon-success">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#fff" d="M336 448H16c-8.84 0-16 7.16-16 16v32c0 8.84 7.16 16 16 16h320c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16zm208-320V80c0-8.84-7.16-16-16-16s-16 7.16-16 16v48h-32V80c0-8.84-7.16-16-16-16s-16 7.16-16 16v48h-16c-8.84 0-16 7.16-16 16v32c0 35.76 23.62 65.69 56 75.93v118.49c0 13.95-9.5 26.92-23.26 29.19C431.22 402.5 416 388.99 416 372v-28c0-48.6-39.4-88-88-88h-8V64c0-35.35-28.65-64-64-64H96C60.65 0 32 28.65 32 64v352h288V304h8c22.09 0 40 17.91 40 40v24.61c0 39.67 28.92 75.16 68.41 79.01C481.71 452.05 520 416.41 520 372V251.93c32.38-10.24 56-40.17 56-75.93v-32c0-8.84-7.16-16-16-16h-16zm-283.91 47.76l-93.7 139c-2.2 3.33-6.21 5.24-10.39 5.24-7.67 0-13.47-6.28-11.67-12.92L167.35 224H108c-7.25 0-12.85-5.59-11.89-11.89l16-107C112.9 99.9 117.98 96 124 96h68c7.88 0 13.62 6.54 11.6 13.21L192 160h57.7c9.24 0 15.01 8.78 10.39 15.76z"/></svg>
+                                                    </span>
+                                                <div class="d-flex flex-column ml-3 mr-5">
+                                                    <div class="font-size-h4 text-white mb-2">
+                                                        <strong id=pnuma>--</strong></div>
+                                                    <p class="text-dark-50">订阅码数量</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body pt-2 pl-5 pr-3 pb-1">
+                                            <p class="text-dark-50" id="pnumb">数量：N/A (个)                                                                                           </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-lg-6 col-xl-3 ">
+                                    <div class="card card-custom mb-8 bg-card-dark rounded-lg shadow">
+                                        <div class="card-body pt-6 pl-4 pb-0">
+                                            <div class="d-flex pt-4 pl-4 pr-4 pb-0">
+                                                    <span class="svg-icon svg-icon-4x svg-icon-warning">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#fff" d="M502.60969,310.04206l-96.70393,96.71625a31.88151,31.88151,0,0,1-45.00765,0L280.572,326.34115l-9.89231,9.90759a190.56343,190.56343,0,0,1-5.40716,168.52287c-4.50077,8.50115-16.39342,9.59505-23.20707,2.79725L134.54715,400.05428l-17.7999,17.79929c.70324,2.60972,1.60965,5.00067,1.60965,7.79793a32.00544,32.00544,0,1,1-32.00544-32.00434c2.79735,0,5.18838.90637,7.7982,1.60959l17.7999-17.79929L4.43129,269.94287c-6.798-6.81342-5.70409-18.6119,2.79735-23.20627a190.58161,190.58161,0,0,1,168.52864-5.407l9.79854-9.79821-80.31053-80.41716a32.002,32.002,0,0,1,0-45.09987L201.96474,9.29814A31.62639,31.62639,0,0,1,224.46868,0a31.99951,31.99951,0,0,1,22.59759,9.29814l80.32615,80.30777,47.805-47.89713a33.6075,33.6075,0,0,1,47.50808,0l47.50807,47.50645a33.63308,33.63308,0,0,1,0,47.50644l-47.805,47.89713L502.71908,265.036A31.78938,31.78938,0,0,1,502.60969,310.04206ZM219.56159,197.433l73.82505-73.82252-68.918-68.9-73.80942,73.80689Zm237.74352,90.106-68.90233-68.9156-73.825,73.82252,68.918,68.9Z"/></svg>
+                                                    </span>
+                                                <div class="d-flex flex-column ml-3 mr-5">
+                                                    <div class="font-size-h4 text-white mb-2" id="pinst"><strong>NA / NA</strong></div>
+                                                    <p class="text-dark-50">最大连接实例数</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body pt-2 pl-5 pr-3 pb-1">
+                                            <p class="text-dark-50" id="pinstdetail">
+                                                最大连接实例: --(个)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-lg-6 col-xl-3 ">
+                                    <div class="card card-custom mb-8 bg-card-dark rounded-lg shadow">
+                                        <div class="card-body pt-6 pl-4 pb-0">
+                                            <div class="d-flex pt-4 pl-4 pr-4 pb-0">
+                                                    <span class="svg-icon svg-icon-4x svg-icon-danger">
+                                                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="#fff" d="M128 96C92.7 96 64 124.7 64 160L64 448C64 483.3 92.7 512 128 512L512 512C547.3 512 576 483.3 576 448L576 256C576 220.7 547.3 192 512 192L136 192C122.7 192 112 181.3 112 168C112 154.7 122.7 144 136 144L520 144C533.3 144 544 133.3 544 120C544 106.7 533.3 96 520 96L128 96zM480 320C497.7 320 512 334.3 512 352C512 369.7 497.7 384 480 384C462.3 384 448 369.7 448 352C448 334.3 462.3 320 480 320z"/></svg>
+                                                    </span>
+                                                <div class="d-flex flex-column ml-3 mr-5">
+                                                    <div class="font-size-h4 text-white mb-2">
+                                                        <strong> 0.00 USDT</strong></div>
+                                                    <p class="text-dark-50">钱包余额</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body pt-2 pl-5 pr-3 pb-1">
+                                            <p class="text-dark-50">返利累计: $ 0</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-7">
+                                    <!-- 公告-->
+                                    <div class="card card-custom bgi-no-repeat gutter-b rounded-lg shadow"
+                                         >
+                                        <div class="card-header border-0 pt-5">
+                                            <div class="card-title font-weight-bolder">
+                                                <div class="card-label text-primary font-weight-bold font-size-h3">
+                                                    <i class="fa fa-gas-pump icon-md text-primary"></i><strong>
+                                                        订阅码列表</strong>
+                                                 </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            
+                                            <div id="sublist"></div>
+                                            <div class="text-dark-50 font-weight-normal font-size-lg-h4 font-size-h5">
+                                                订阅码列表
+                                        </div>
+                                        </div>
+                                    </div>
+                                    <!-- 客户端下载 -->
+                                                                            <div class="card card-custom gutter-b rounded-lg shadow">
+                                            <div class="card-header border-0 pt-5">
+                                                <div class="card-title font-weight-bolder">
+                                                    <div class="card-label text-primary font-weight-bold font-size-h3">
+                                                        <i class="fas fa-leaf icon-md text-primary"></i><strong> 开始使用</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-body mt-3">
+                                                <ul class="dashboard-tabs nav nav-pills row nav-primary row-paddingless m-0 p-0" role="tablist">
+                                                    <li class="nav-item d-flex col flex-grow-1 flex-shrink-0 mr-3 mb-3 mb-lg-0 cursor_onclick">
+                                                        <a class="nav-link border d-flex flex-grow-1 rounded flex-column align-items-center active" data-toggle="pill" href="https://www.winsun8.com/dashboard/release/Winsun_Released_1.0.21.zip">
+                                                            <span class="nav-icon py-2 w-auto"><i class="fab la-windows icon-3x"></i></span>
+                                                            <span class="nav-text font-size-lg py-2 font-weight-bold text-center">Windows</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item d-flex col flex-grow-1 flex-shrink-0 mr-3 mb-3 mb-lg-0 cursor_onclick">
+                                                        <a class="nav-link border d-flex flex-grow-1 rounded flex-column align-items-center" data-toggle="pill" href="#tab_android">
+                                                            <span class="nav-icon py-2 w-auto"><i class="fab la-android icon-3x"></i></span>
+                                                            <span class="nav-text font-size-lg py-2 font-weight-bold text-center">Android</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item d-flex col flex-grow-1 flex-shrink-0 mr-3 mb-3 mb-lg-0 cursor_onclick">
+                                                        <a class="nav-link border d-flex flex-grow-1 rounded flex-column align-items-center" data-toggle="pill" href="#tab_ios">
+                                                            <span class="nav-icon py-2 w-auto"><i class="fab la-apple icon-3x"></i></span>
+                                                            <span class="nav-text font-size-lg py-2 font-weight-bold text-center">iOS</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item d-flex col flex-grow-1 flex-shrink-0 mr-3 mb-3 mb-lg-0 cursor_onclick">
+                                                        <a class="nav-link border d-flex flex-grow-1 rounded flex-column align-items-center" data-toggle="pill" href="#tab_macos">
+                                                            <span class="nav-icon py-2 w-auto"><i class="fab la-apple icon-3x"></i></span>
+                                                            <span class="nav-text font-size-lg py-2 font-weight-bold text-center">macOS</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+
+                                                <div class="separator separator-dashed separator-border-4 p-5"></div>
+                                                <div class="tab-content m-0 p-0">
+                                                    <div class="tab-pane active" id="tab_windows" role="tabpanel">
+                                                        <div class="card-body pb-0 pl-0">
+                                                            <div class="flex-grow-1 card-spacer-x">
+                                                                                                                                <div class="d-flex align-items-center justify-content-between mb-5">
+                                                                    <div class="d-flex align-items-center mr-2">
+                                                                        <div class="symbol symbol-60 symbol-light mr-3 flex-shrink-0">
+                                                                            <div class="symbol-label">
+                                                                                <img src="winsun_logo_dsn.png" alt="" class="h-50">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="ml-3">
+                                                                            <span class="font-size-h5 text-primary font-weight-bolder">订阅码使用流程</span>
+                                                                            <div class="font-size-sm text-muted font-weight-bold mt-1">v1.0.1</div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <a href="Tutorial_windows.jpg" class="btn btn-primary font-weight-bold btn-pill">订阅码教程(Windows)</a>
+                                                                </div>
+                                                                                                                                <div class="separator separator-dashed mb-5"></div>
+                                                                                                                                                                                                <div class="d-flex align-items-center justify-content-between mb-5">
+                                                                    <div class="d-flex align-items-center mr-2">
+                                                                        <div class="symbol symbol-60 symbol-light mr-3 flex-shrink-0">
+                                                                            <div class="symbol-label">
+                                                                                <img src="winsun_logo_dsn.png" alt="" class="h-50">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="ml-3">
+                                                                            <span class="font-size-h5 text-primary font-weight-bolder">信号系统(Windows)</span>
+                                                                            <div class="font-size-sm text-muted font-weight-bold mt-1">v1.0.88</div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <a href="Tutorial_windows.jpg" class="btn btn-primary font-weight-bold btn-pill">安装教程</a>
+                                                                </div>
+                                                                                                                                <div class="separator separator-dashed mb-5"></div>
+                                                                                                                                                                                                <div class="d-flex align-items-center justify-content-between mb-5">
+                                                                    <div class="d-flex align-items-center mr-2">
+                                                                        <div class="symbol symbol-60 symbol-light mr-3 flex-shrink-0">
+                                                                            <div class="symbol-label">
+                                                                                <img src="winsun_logo_dsn.png" alt="" class="h-50">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="ml-3">
+                                                                            <span class="font-size-h5 text-primary font-weight-bolder">手机通知(安卓)</span>
+                                                                            <div class="font-size-sm text-muted font-weight-bold mt-1">v1.0.1</div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <a href="Tutorial_windows.jpg" class="btn btn-primary font-weight-bold btn-pill">安装教程</a>
+                                                                </div>
+                                                                                                                                                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>                                </div>
+
+                                <div class="col-lg-5">
+                                
+                                    <div class="card card-custom gutter-b rounded-lg shadow">
+                                        <div class="card-header border-0 pt-5">
+                                            <div class="card-title font-weight-bolder">
+                                                <div class="card-label text-primary font-weight-bold font-size-h3">
+                                                    <i class="fa fa-magic icon-md text-primary"></i><strong> <a onclick="/">信号系统客户端</a></strong>
+                                                
+                                                    <div class="font-size-sm text-muted mt-2"></div>
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                            
+                                                <div class="col">
+                                                <br/><br/>
+                                                    <div class="btn-group mb-3 mr-3">
+                                                        <a href="https://www.winsun8.com/dashboard/release/Winsun_Released_1.0.21.zip" target="_blank">
+                                                            <button type="button" class="btn btn-pill btn-vvr" style="background:#026171">
+                                                                <i class="fab la-windows text-white icon-2x"></i>
+                                                                &nbsp;&nbsp;Windows 客户端&nbsp;&nbsp;
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                    
+                                                    <div class="btn-group mb-3 mr-3">
+                                                        <a href="Tutorial_windows.jpg" target="_blank">
+                                                            <button type="button" class="btn btn-pill btn-vvr" style="background:#026171"> 
+                                                            <i class="fab la-android text-white icon-2x"></i>
+                                                            &nbsp;&nbsp;Android 客户端(未开放)&nbsp;&nbsp;
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                        
+                                                    <div class="btn-group mb-3 mr-3">
+                                                        <a href="Tutorial_windows.jpg" target="_blank">
+                                                            <button type="button" class="btn btn-pill btn-vvr" style="background:#026171"> 
+                                                            <i class="fab la-apple text-white icon-2x"></i>
+                                                            &nbsp;&nbsp;macOS 客户端(未开放)&nbsp;&nbsp;
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 订阅地址 -->
+                                    <div class="card card-custom gutter-b rounded-lg shadow">
+                                        <div class="card-header border-0 pt-5">
+                                            <div class="card-title font-weight-bolder">
+                                                <div class="card-label text-primary font-weight-bold font-size-h3">
+                                                    <i class="fa fa-magic icon-md text-primary"></i><strong> <a onclick="/">数据分析（进阶）</a></strong>
+                                                    <div class="font-size-sm text-muted mt-2"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col">
+                                                        <div class="btn-group mb-3 mr-3">
+                                                                <button type="button" class="dropdown-item copy-text" onclick="window.open('https://api.winsun8.com/notice','_blank')"><i class="fa fa-blog text-white icon-2x"></i> &nbsp;&nbsp;WINSUN最新公告&nbsp;&nbsp;</button>
+                                                                <button type="button" class="dropdown-item copy-text" onclick="window.open('https://api.winsun8.com/notice','_blank')"><i class="fa fa-blog text-white icon-2x"></i> &nbsp;&nbsp;订阅码被暂停使用解决&nbsp;&nbsp;</button>
+                                                                <button type="button" class="dropdown-item copy-text" onclick="privacy()"><i class="fa fa-blog text-white icon-2x"></i> &nbsp;&nbsp;数据报告及风险披露&nbsp;&nbsp;</button>
+                                                         
+                                                        </div>
+                                                             
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 节点流量统计 -->
+                                    <div class="card card-custom gutter-b rounded-lg shadow" id="index-NodeTrafficChart-card">
+                                        <div class="card-header border-0 pt-5">
+                                            <div class="card-title font-weight-bolder">
+                                                <div class="card-label text-primary font-weight-bold font-size-h3">
+                                                    <i class="fa fa-fill-drip icon-md text-primary"></i><strong> 实例连接统计</strong>
+                                                    <div class="font-size-sm text-muted mt-2">N/A</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body pt-0">
+                                            <div id="NodeTrafficChart"></div>
+                                            <div id="NodeTrafficChart_null" class="text-center p-10" style="display: none;">
+                                                <h3 class="display-5 text-muted">暂无记录</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer py-4 d-flex flex-lg-column" id="kt_footer">
+    <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+        <div class="text-dark order-2 order-md-1">
+            <span class="text-muted font-weight-bold mr-2">2025©</span>
+            <a href="/" target="_blank" class="text-dark-75 text-hover-primary">Winsun Network:</a>
+            <a href="#" target="_blank" class="text-dark-75 text-hover-primary" id="wpriv">#</a>
+        </div>
+        <div class="nav nav-dark order-1 order-md-2" id="theme_copyright">
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Offcanvas组件 -->
+    <div class="tffcanvas daso-body" id="tffcanvasMenu">
+        <div class="tffcanvas-header">
+            <button type="button" class="btn-close" id="hideButton" aria-label="Close"></button>
+        </div>
+        <div class="tffcanvas-body" style="font-size: 27px;line-height: 39px;">
+            <nav class="nav_bg">
+                <ul>
+                    <li><p class="align-items-left pill" onclick="linkZ()">用户中心</p></li>
+                    <li><p class="align-items-left pill" onclick="linkA()">购买订阅码</p></li>
+                    <li><p class="align-items-left pill" onclick="dlalert()">下载手机端</p></li>
+                    <li><p class="align-items-left pill" onclick="linkB()">账户信息</p></li>
+                    <li><p class="align-items-left pill" onclick="privacy()">服务条款</p></li>
+                </ul>
+            </nav>
+            <br><br><br><br>
+            <a class="align-items-right" href="#" id="wpaccount">NULL</a><br>
+           <a class="align-items-right" href="../client" >退出登录</a>
+        </div>
+    </div>
+    <div class="tffcanvas-backdrop" id="tffcanvasBackdrop"></div>
+
+     <style>
+             #kt_subheader{
+            min-height: 1px !important;
+        }
+         
+
+        ul {
+            list-style-type: none; 
+            padding: 0; 
+            margin: 0; 
+        }
+        
+        
+        a {
+            color: white; 
+            text-decoration: none; 
+            transition: color 0.3s ease; 
+        }
+        
+        
+        a:hover {
+            color: #27dde6; 
+        }
+        
+        .pill {
+            color: white; 
+            text-decoration: none; 
+            transition: color 0.3s ease; 
+            cursor: pointer;
+        }
+        
+        
+        .pill:hover {
+            color: #27dde6; 
+            cursor: pointer;
+        }
+        
+        .nav_bg{
+            color: #333;
+        }
+
+
+        .btn {
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        /* Offcanvas样式 */
+        .tffcanvas {
+            position: fixed;
+            top: 0;
+            right: -180%; /* 初始隐藏 */
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+            transform: translateX(0);
+            z-index: 1000;
+
+        }
+
+        .tffcanvas.show {
+            right: 0; /* 显示时移动到右侧 */
+        }
+
+        .tffcanvas-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #26808e;
+        }
+
+        .tffcanvas-body {
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .btn-close {
+            background: url('data:image/svg+xml,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="%23000"%3e%3cpath d="M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z"%3e%3c/path%3e%3c/svg%3e') no-repeat center center;
+            background-size: 20px 20px;
+            width: 20px;
+            height: 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .tffcanvas-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: auto;
+            height: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .tffcanvas.show + .tffcanvas-backdrop {
+            display: block;
+        }
+    </style>
+
+        <script>
+        const showButton = document.getElementById('showButton');
+        const showButton2 = document.getElementById('showButton2');
+        const showButton3 = document.getElementById('waccount');
+        
+        const hideButton = document.getElementById('hideButton');
+        const closeButton = document.getElementById('closeButton');
+        const tffcanvasMenu = document.getElementById('tffcanvasMenu');
+        const tffcanvasBackdrop = document.getElementById('tffcanvasBackdrop');
+
+        showButton.addEventListener('click', function() {
+            tffcanvasMenu.classList.add('show');
+        });
+        showButton2.addEventListener('click', function() {
+            tffcanvasMenu.classList.add('show');
+        });
+        showButton3.addEventListener('click', function() {
+            tffcanvasMenu.classList.add('show');
+        });
+
+        hideButton.addEventListener('click', function() {
+            tffcanvasMenu.classList.remove('show');
+        });
+
+        closeButton.addEventListener('click', function() {
+            tffcanvasMenu.classList.remove('show');
+        });
+
+        tffcanvasBackdrop.addEventListener('click', function() {
+            tffcanvasMenu.classList.remove('show');
+            tffcanvasBackdrop.classList.remove('show');
+        });
+    </script>
+
+    </body>
+</html>
