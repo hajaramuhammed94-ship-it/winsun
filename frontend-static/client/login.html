@@ -3,16 +3,17 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <base href="/client/">
 
         <meta name="description" content="">
         <meta name="author" content="">
 
         <title>Winsun OS| Login </title>
 
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="manifest" href="../site.webmanifest">
         <link href="cs.css" rel="stylesheet">
          <link href="go.css" rel="stylesheet">
         <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -20,33 +21,72 @@
         <link href="css/bootstrap-icons.css" rel="stylesheet">
 
         <link href="css/winsun-kool-form-pack.css" rel="stylesheet">
-        <script src="appjs/jquery-3.6.1.min.js"></script>
-        <script src="appjs/jquery.params.js"></script>
-        <script src="appjs/json2.js"></script>
+        <script src="js/jquery.min.js"></script>
         <script src="appjs/md5.js"></script>
+        <script src="config.js"></script>
         <script>
-            
+
     function login_account(){
-        var thismail=$(wmail).val();
-        var thispriv=hex_md5($(wpass).val());
-          $.ajax({
-        	type:"GET",
-        	  dataType: "html",
-        	   url: "https://api.winsun8.com"+"/api/account/login/m="+$(wmail).val()+"&priv="+hex_md5($(wpass).val()),
-        	  async:false,
-        	  success: function(data) {
-                var json =JSON.parse(data);
-                if (json.status=="ok"){
-                   window.open("../../dashboard/index.html?m="+thismail+"&priv="+thispriv,"_self");
-                }
-                if (json.status!="ok"){
-                    alert (json.rsp);
-                }
-        	  }
-        	});
+        var email = $(wmail).val();
+        var password = $(wpass).val();
+
+        if (!email || !password) {
+            alert('请输入邮箱和密码');
+            return;
         }
-            
-            
+
+        const api = getCurrentAPI();
+        const encryptedPassword = encryptPassword(password);
+
+        // 构建请求数据
+        let requestData = {
+            email: email,
+            password: encryptedPassword
+        };
+
+        // 构建 URL
+        let url = buildApiUrl('login', {
+            email: email,
+            password_hash: encryptedPassword
+        });
+
+        if (API_CONFIG.DEBUG) {
+            console.log('登录请求:', {
+                url: url,
+                method: api.method,
+                data: requestData
+            });
+        }
+
+        // 发送请求
+        $.ajax({
+            type: api.method,
+            url: url,
+            data: api.method === 'POST' ? JSON.stringify(requestData) : undefined,
+            contentType: api.method === 'POST' ? 'application/json' : undefined,
+            dataType: "json",
+            success: function(data) {
+                const response = parseApiResponse(data, 'login');
+
+                if (response.success) {
+                    // 保存认证信息
+                    saveAuthInfo(response.token, response.user);
+
+                    // 跳转到仪表板
+                    const redirectUrl = API_CONFIG.REDIRECT_AFTER_LOGIN[API_CONFIG.USE_API];
+                    window.location.href = redirectUrl;
+                } else {
+                    alert(response.message || '登录失败');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('登录错误:', error);
+                alert('登录失败: ' + (xhr.responseJSON?.message || error));
+            }
+        });
+    }
+
+
         </script>
     </head>
     

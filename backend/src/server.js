@@ -17,17 +17,36 @@ const PORT = process.env.PORT || 5000;
 // 创建Socket.IO实例
 const io = socketIO(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:8080',
-    methods: ['GET', 'POST'],
-    credentials: true
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization']
   }
 });
 
-// 中间件
+// CORS 中间件 - 允许所有来源
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:8080',
-  credentials: true
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range']
 }));
+
+// 添加额外的 CORS 头
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  res.header('Access-Control-Allow-Credentials', 'true');
+
+  // 处理 OPTIONS 预检请求
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+
+  next();
+});
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -73,9 +92,12 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 启动服务器（使用http server而不是app.listen）
-server.listen(PORT, () => {
-  console.log(`
+// Vercel serverless 函数导出
+// 在 Vercel 上不需要 listen，直接导出 app
+if (process.env.NODE_ENV !== 'production') {
+  // 仅在本地开发时启动服务器
+  server.listen(PORT, () => {
+    console.log(`
 ╔═══════════════════════════════════════╗
 ║   🚀 Winsun API Server Started       ║
 ║   📡 HTTP Port: ${PORT}                 ║
@@ -83,8 +105,10 @@ server.listen(PORT, () => {
 ║   🌍 Environment: ${process.env.NODE_ENV || 'development'}        ║
 ║   ⏰ Time: ${new Date().toLocaleString()}  ║
 ╚═══════════════════════════════════════╝
-  `);
-});
+    `);
+  });
+}
 
-module.exports = { app, server, io };
+// 导出 app 供 Vercel 使用
+module.exports = app;
 

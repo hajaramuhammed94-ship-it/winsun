@@ -12,7 +12,7 @@ const API_CONFIG = {
     // 选项 2: 使用你自己部署的后端 API
     // 选项 3: 使用自定义 API
 
-    USE_API: 'ORIGINAL', // 可选值: 'ORIGINAL', 'DEPLOYED', 'CUSTOM'
+    USE_API: 'DEPLOYED', // 可选值: 'ORIGINAL', 'DEPLOYED', 'CUSTOM'
     
     // ========================================
     // API 端点配置
@@ -36,7 +36,7 @@ const API_CONFIG = {
         
         // 你部署的后端 API
         DEPLOYED: {
-            baseUrl: 'https://winsun-backend-9ueb8wgwv-cvsgetyes-projects.vercel.app',
+            baseUrl: 'https://winsun-backend.vercel.app',
             endpoints: {
                 login: '/api/auth/login',
                 register: '/api/auth/register',
